@@ -1,10 +1,15 @@
 import { Button, Col, Input, Row } from 'antd';
 import { useRef } from 'react';
+import { LoginReqType } from '../types';
 import styles from './Signin.module.css';
 
-export default function Signin() {
+interface SigninProps {
+  login: (reqData: LoginReqType) => void;
+}
+
+const Signin: React.FC<SigninProps> = ({ login }) => {
   const emailRef = useRef<any>(null); // 제너릭으로 antd의 Input 컴포넌트를 넣음
-  // const passwordRef = useRef<Input>(null); // useRef로 DOM 직접 선택
+  const passwordRef = useRef<any>(null); // useRef로 DOM 직접 선택
   return (
     <Row align="middle" className={styles.signin_row}>
       <Col span={24}>
@@ -39,10 +44,11 @@ export default function Signin() {
                 autoComplete="current-password"
                 name="email"
                 className={styles.input}
+                ref={passwordRef}
               />
             </div>
             <div className={styles.button_area}>
-              <Button size="large" className={styles.button}>
+              <Button size="large" className={styles.button} onClick={click}>
                 Sign In
               </Button>
             </div>
@@ -53,6 +59,10 @@ export default function Signin() {
   );
   function click() {
     const email = emailRef.current!.state.value; // emailRef.current 까지 하면 null 혹은 Input이 나옴 Non-null assertion을 사용해서 null일 가능성을 없애줌. 타입이 Input으로 고정됨
-    // const password = passwordRef.current!.state.value;
+    const password = passwordRef.current!.state.value;
+
+    login({ email, password });
   }
-}
+};
+
+export default Signin;
